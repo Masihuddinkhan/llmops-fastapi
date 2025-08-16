@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llmops-fastapi
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: llmops-fastapi
+  template:
+    metadata:
+      labels:
+        app: llmops-fastapi
+    spec:
+      containers:
+      - name: llmops-fastapi
+        image: llmops-fastapi:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llmops-fastapi-service
+spec:
+  selector:
+    app: llmops-fastapi
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer

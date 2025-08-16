@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dataset Uploader & LLM Search</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}">
+</head>
+<body>
+  <h1>Upload Kaggle Dataset (ZIP)</h1>
+  <input type="file" id="fileInput" />
+  <button onclick="uploadDataset()">Upload & Extract</button>
+
+  <h2>Dataset Structure</h2>
+  <div id="fileTree"></div>
+
+  <div id="llmSection">
+    <h2>LLM Search</h2>
+    <input type="text" id="queryInput" placeholder="Ask about dataset (e.g., class count)" size="50" />
+    <button onclick="askLLM()">Search</button>
+    <div id="llmResult"></div>
+  </div>
+
+  <script>
+    async function uploadDataset() {
+      const fileInput = document.getElementById("fileInput");
+      if (!fileInput.files.length) { alert("Select ZIP file"); return; }
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+
+      try {
+        const res = await fetch("/api/dataset/upload", { method: "POST", body: formData });
+        const data = await res.json();
+        if(res.ok){
+          displayTree(data.counts);
+          alert("Upload successful!");
+        } else {
+          alert(data.message || "Upload failed");
+        }
+      } catch(e){
+        console.error(e);
+        alert("Error uploading dataset");
+      }
+    }
+
+    function displayTree(counts){
+      const container = document.getElementById("fileTree");
+      container.innerHTML = "";
+      for(const key in counts){
+        const folderDiv = document.createElement("div");
+        folderDiv.innerHTML = `<strong>${key}</strong>`;
+        const ul = document.createElement("ul");
+        for(const cls in counts[key]){
+          const li = document.createElement("li");
+          li.textContent = `${cls}: ${counts[key][cls]} images`;
+          ul.appendChild(li);
+        }
+        folderDiv.appendChild(ul);
+        container.appendChild(folderDiv);
+      }
+    }
+
+    async function askLLM(){
+      const query = document.getElementById("queryInput").value.trim();
+      if(!query){ alert("Enter a query!"); return; }
+
+      try {
+        const res = await fetch("/api/dataset/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: query })
+        });
+        const data = await res.json();
+        document.getElementById("llmResult").textContent = data.answer;
+      } catch(e){
+        console.error(e);
+        alert("Error querying LLM");
+      }
+    }
+  </script>
+</body>
+</html>
