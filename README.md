@@ -1,6 +1,24 @@
-# llmops-fastapi
+# AI-Powered Dataset Management & Search System
 
-# LLM-FastPI
+##  Overview
+An intelligent FastAPI-based platform that enables seamless dataset upload, extraction, and LLM-powered search capabilities. Built for scalable deployment with Kubernetes orchestration.
+
+##  Key Features
+- **Dataset Upload & Management**: Automated zip file processing and server-side extraction
+- **Dynamic File Structure Visualization**: Interactive web UI displaying organized folder hierarchy  
+- **LLM-Powered Search**: Natural language queries for dataset exploration and analysis
+- **Smart Analytics**: Class-based filtering, statistical counts, and intelligent data insights
+- **Scalable Architecture**: Kubernetes-ready deployment for high-performance operations
+
+##  Tech Stack
+- **Backend**: Python, FastAPI, Uvicorn
+- **AI/ML**: LLM Integration (OpenAI/Hugging Face), NLP
+- **Frontend**: HTML, CSS, JavaScript
+- **Containerization**: Docker
+- **Orchestration**: Kubernetes
+- **File Processing**: Python File System Libraries
+
+##  Architecture
 
 # uvicorn app.main:app --reload
 
